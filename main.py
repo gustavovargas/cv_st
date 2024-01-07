@@ -4,7 +4,14 @@ import requests
 # Función para llamar a la función Lambda de AWS
 def call_lambda_function(input_text):
     lambda_endpoint = st.secrets["LAMBDA_URL"]
-    response = requests.post(lambda_endpoint, json={"input_string": input_text})
+    list_words = input_text.split(",")
+    list_words = [word.strip() for word in list_words]
+    params = {
+        "bucket": "data-kaigen-cv",
+        "palabras_clave": list_words
+    }
+    
+    response = requests.post(lambda_endpoint, json=params)
     print("\nResponse from Lambda function:", response)
     response = response.json()
     return response
