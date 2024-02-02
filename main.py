@@ -1,6 +1,13 @@
 import streamlit as st
 import requests
+import os
 
+@st.cache_data(show_spinner=False)
+def get_css() -> str:
+    # Read CSS code from style.css file
+    with open(os.path.join(".", "style.css"), "r") as f:
+        return f"<style>{f.read()}</style>"
+    
 # Función para llamar a la función Lambda de AWS
 def call_lambda_function(input_text):
     lambda_endpoint = st.secrets["LAMBDA_URL"]
@@ -16,9 +23,29 @@ def call_lambda_function(input_text):
     response = response.json()
     return response
 
+st.set_page_config(
+    page_title="SkillsMapper",
+    page_icon="https://www.kairosds.com/favicon.png",
+)
+
+html = f"""
+    <div style="padding: 0px;">
+        <img src="https://www.kairosds.com/assets/images/logo-k.svg" alt="Logo" style="height: 20px;">
+    </div>
+    """
+
+st.markdown(html, unsafe_allow_html=True)
 
 # Interfaz de usuario de Streamlit
-st.title("CV Search App")
+title_html = """
+    <style>
+        .title {
+            padding-top: 5px;
+        }
+    </style>
+    <h1 class="title">SkillsMapper</h1>
+    """
+st.markdown(title_html, unsafe_allow_html=True)
 
 user_input = st.text_input("Search for:", "")
 
